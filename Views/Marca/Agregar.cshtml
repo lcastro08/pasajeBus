@@ -1,0 +1,44 @@
+﻿@using MiPrimerEntityFramework.Models
+@model MarcaCLS 
+@{
+    ViewBag.Title = "Agregar";
+}
+
+<h2>Agregar</h2>
+<div class="row">
+    <div class="col-md-6">
+        @using (Html.BeginForm("Agregar", "Marca", FormMethod.Post, new { @id="frmAgregar"}))
+        {
+            <div>
+                @Html.LabelFor(P => P.nombre)
+                @Html.TextBoxFor(P => P.nombre, new { @class = "form-control" })
+                @Html.ValidationMessage("nombre",new {@class = "text-danger" })
+                @if(Model != null && Model.MensajeError != null)
+                {
+                    @Html.Label(Model.MensajeError,new { @class="text-danger"})
+                }
+            </div>
+            <div>
+                @Html.LabelFor(P => P.descripcion)
+                @Html.TextBoxFor(P => P.descripcion, new { @class = "form-control" })
+                @Html.ValidationMessage("descripcion", new { @class = "text-danger" })
+            </div>
+            <br />
+            <div style="margin:auto">
+                <input type="submit" class="btn btn-primary" value="Guardar" />
+                @Html.ActionLink("Regresar","Index","Marca",null,new { @class = "btn btn-danger"})
+            </div>
+            
+        }
+    </div>
+</div>
+
+<script>
+    var Agregando = document.getElementById("frmAgregar");
+        Agregando.onsubmit = function (e) {
+        e.preventDefault();
+        if (confirm("Deseas guardar los cambios?") == 1) {
+            Agregando.submit();
+        }
+    }
+</script>
