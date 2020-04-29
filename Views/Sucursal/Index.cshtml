@@ -7,6 +7,12 @@
 <h2>Index</h2>
 @Html.ActionLink("Agregar","Agregar","Sucursal",null, new { @class="btn btn-primary"})
 
+@using (Html.BeginForm("Index", "Sucursal", FormMethod.Get,new { @id = "frmBusqueda"}))
+{
+
+@Html.Label("Ingrese el nombre de la sucursal: ")
+@Html.TextBox("nombre")
+
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -33,6 +39,7 @@
         }
     </tbody>
 </table>
+}
 <script>
     function eliminarSucursal()
     {
@@ -42,6 +49,13 @@
         {
             event.preventDefault();
         }
+    }
+
+    var nombre = document.getElementById("nombre");
+    nombre.onkeyup = function ()
+    {
+        var busqueda = document.getElementById("frmBusqueda");
+        busqueda.submit();
     }
    
 </script>

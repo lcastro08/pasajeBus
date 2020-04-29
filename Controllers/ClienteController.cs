@@ -10,12 +10,18 @@ namespace MiPrimerEntityFramework.Controllers
     public class ClienteController : Controller
     {
         // GET: Cliente
-        public ActionResult Index()
+        public ActionResult Index(ClienteCLS oClienteCLS)
         {
             List<ClienteCLS> listaCliente = null;
+            int idsexo = oClienteCLS.iidsexo;
+            llenarSexo();
+            ViewBag.lista = listaSexo;
+
             using (var bd = new BDPasajeEntities())
             {
-                listaCliente = (from Cliente in bd.Cliente
+                if(oClienteCLS.iidsexo == 0)
+                { 
+                    listaCliente = (from Cliente in bd.Cliente
                                 where Cliente.BHABILITADO == 1
                                 select new ClienteCLS
                                 {
@@ -25,6 +31,21 @@ namespace MiPrimerEntityFramework.Controllers
                                     apmaterno = Cliente.APMATERNO,
                                     telefonofijo = Cliente.TELEFONOFIJO
                                 }).ToList();
+                }
+                else
+                {
+                    listaCliente = (from Cliente in bd.Cliente
+                                    where Cliente.BHABILITADO == 1
+                                    && Cliente.IIDSEXO == idsexo
+                                    select new ClienteCLS
+                                    {
+                                        iidcliente = Cliente.IIDCLIENTE,
+                                        nombre = Cliente.NOMBRE,
+                                        appaterno = Cliente.APPATERNO,
+                                        apmaterno = Cliente.APMATERNO,
+                                        telefonofijo = Cliente.TELEFONOFIJO
+                                    }).ToList();
+                }
             }
 
                 return View(listaCliente);

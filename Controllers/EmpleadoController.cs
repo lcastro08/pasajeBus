@@ -11,11 +11,14 @@ namespace MiPrimerEntityFramework.Controllers
     public class EmpleadoController : Controller
     {
         // GET: Empleado
-        public ActionResult Index()
+        public ActionResult Index(EmpleadoCLS oEmpleadoCLS)
         {
+            int idTipoUsuario = oEmpleadoCLS.iidtipoUsuario;
             List<EmpleadoCLS> listaEmpleado = null;
+            listarTipoUsuario();
             using (var bd = new BDPasajeEntities())
             {
+                if(idTipoUsuario == 0) { 
                 listaEmpleado = (from empleado in bd.Empleado
                                  join tipoUsuario in bd.TipoUsuario
                                  on empleado.IIDTIPOUSUARIO equals tipoUsuario.IIDTIPOUSUARIO
@@ -30,6 +33,25 @@ namespace MiPrimerEntityFramework.Controllers
                                      nombreTipoUsuario = tipoUsuario.NOMBRE,
                                      nombreTipoContrato = tipoContrato.NOMBRE
                                  }).ToList();
+                }
+                else
+                {
+                    listaEmpleado = (from empleado in bd.Empleado
+                                     join tipoUsuario in bd.TipoUsuario
+                                     on empleado.IIDTIPOUSUARIO equals tipoUsuario.IIDTIPOUSUARIO
+                                     join tipoContrato in bd.TipoContrato
+                                     on empleado.IIDTIPOCONTRATO equals tipoContrato.IIDTIPOCONTRATO
+                                     where empleado.BHABILITADO == 1 
+                                     && empleado.IIDTIPOUSUARIO == idTipoUsuario
+                                     select new EmpleadoCLS
+                                     {
+                                         iidEmpleado = empleado.IIDEMPLEADO,
+                                         Nombre = empleado.NOMBRE,
+                                         apPaterno = empleado.APPATERNO,
+                                         nombreTipoUsuario = tipoUsuario.NOMBRE,
+                                         nombreTipoContrato = tipoContrato.NOMBRE
+                                     }).ToList();
+                }
             }
                 return View(listaEmpleado);
         }

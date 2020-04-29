@@ -2,10 +2,17 @@
 @model List<EmpleadoCLS>
 @{
     ViewBag.Title = "Index";
+    List<SelectListItem> listaUsuario = (List<SelectListItem>)ViewBag.listaTipoUsuario;
 }
 
 <h2>Index</h2>
 @Html.ActionLink("Agregar", "Agregar", "Empleado", null, new { @class = "btn btn-primary" })
+
+@using (Html.BeginForm("Index", "Empleado", FormMethod.Get,new { @id = "frmBuscar"}))
+{
+
+@Html.Label("Ingresa el tipo de usuario: ")
+@Html.DropDownList("iidtipoUsuario",listaUsuario)
 
 <table class="table table-hover table-bordered">
     <thead>
@@ -37,7 +44,7 @@
         }
     </tbody>
 </table>
-
+}
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -69,5 +76,12 @@
     {
         var frmEmpleado = document.getElementById("frmEmpleado");
         frmEmpleado.submit();
+    }
+
+    var iidtipoUsuario = document.getElementById("iidtipoUsuario");
+    iidtipoUsuario.onchange = () =>
+    {
+        var formBuscar = document.getElementById("frmBuscar");
+        formBuscar.submit();
     }
 </script>

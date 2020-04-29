@@ -11,12 +11,15 @@ namespace MiPrimerEntityFramework.Controllers
     public class SucursalController : Controller
     {
         // GET: Sucursal
-        public ActionResult Index()
+        public ActionResult Index(SucursalCLS oSucursalCLS)
         {
             List<SucursalCLS> listaSucursal = null;
-            using (var bd = new BDPasajeEntities())
-            {
-                listaSucursal = (from Sucursal in bd.Sucursal
+            string nombreSucursal = oSucursalCLS.nombre;
+                using (var bd = new BDPasajeEntities())
+                {
+                    if (oSucursalCLS.nombre == null)
+                    {
+                        listaSucursal = (from Sucursal in bd.Sucursal
                                  where Sucursal.BHABILITADO == 1
                                  select new SucursalCLS
                                  {
@@ -25,7 +28,21 @@ namespace MiPrimerEntityFramework.Controllers
                                      telefono = Sucursal.TELEFONO,
                                      email = Sucursal.EMAIL
                                  }).ToList();
-            }
+                    }
+                    else
+                    {
+                        listaSucursal = (from Sucursal in bd.Sucursal
+                                     where Sucursal.BHABILITADO == 1
+                                     && Sucursal.NOMBRE.Contains(nombreSucursal)
+                                     select new SucursalCLS
+                                     {
+                                         iidsucursal = Sucursal.IIDSUCURSAL,
+                                         nombre = Sucursal.NOMBRE,
+                                         telefono = Sucursal.TELEFONO,
+                                         email = Sucursal.EMAIL
+                                     }).ToList();
+                }
+                }
             return View(listaSucursal);
         }
 
