@@ -1,0 +1,40 @@
+﻿@using MiPrimerEntityFramework.Models
+@model List<PaginaCLS>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.LabelFor(model => Model[0].iidpagin)
+        </th>
+        <th>
+            @Html.LabelFor(model => Model[0].mensaje)
+        </th>
+        <th>
+            @Html.LabelFor(model => Model[0].accion)
+        </th>
+        <th>
+            @Html.LabelFor(model => Model[0].controlador)
+        </th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.iidpagin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.mensaje)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.accion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.controlador)
+            </td>
+
+        </tr>
+    }
+
+</table>

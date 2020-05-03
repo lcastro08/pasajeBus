@@ -120,6 +120,7 @@
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -129,8 +130,12 @@
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\EmpleadoController.cs" />
     <Compile Include="Controllers\MarcaController.cs" />
+    <Compile Include="Controllers\PaginaController.cs" />
+    <Compile Include="Controllers\RolController.cs" />
+    <Compile Include="Controllers\RolPaginaController.cs" />
     <Compile Include="Controllers\SucursalController.cs" />
     <Compile Include="Controllers\tipoUsuarioController.cs" />
+    <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\ViajeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -181,12 +186,15 @@
     <Compile Include="Models\Pagina.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PaginaCLS.cs" />
     <Compile Include="Models\Rol.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RolCLS.cs" />
     <Compile Include="Models\RolPagina.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RolPaginaCLS.cs" />
     <Compile Include="Models\Sexo.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -262,6 +270,12 @@
     <Content Include="Views\Bus\Editar.cshtml" />
     <Content Include="Views\Viaje\Agregar.cshtml" />
     <Content Include="Views\tipoUsuario\Index.cshtml" />
+    <Content Include="Views\Rol\Index.cshtml" />
+    <Content Include="Views\Rol\_tablaRol.cshtml" />
+    <Content Include="Views\Pagina\Index.cshtml" />
+    <Content Include="Views\Pagina\_tablaPagina.cshtml" />
+    <Content Include="Views\RolPagina\Index.cshtml" />
+    <Content Include="Views\RolPagina\_tableRolPagina.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -271,6 +285,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Usuario\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
