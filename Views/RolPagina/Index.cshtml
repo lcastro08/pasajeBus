@@ -14,10 +14,11 @@
 {
     HttpMethod = "POST",
     UpdateTargetId = "divrolPagina",
-    InsertionMode = InsertionMode.Replace
+    InsertionMode = InsertionMode.Replace,
+    OnSuccess = "Filtrar"
 }, new { @id = "frmFiltrado" }))
 {
-    @Html.DropDownList("iidrol", listaRol, new { @class = "form-control" })
+    @Html.DropDownList("iidrolFiltro", listaRol, new { @class = "form-control" })
     <div id="divrolPagina">
         @Html.Partial("_tableRolPagina", Model)
     </div>
@@ -37,15 +38,13 @@
             @using (Ajax.BeginForm("Guardar", "RolPagina", null, new AjaxOptions
             {
                 HttpMethod = "POST",
-                OnSuccess = "Guardar"
+                OnSuccess = "Guardar",
+                UpdateTargetId = "divErrores",
+                InsertionMode = InsertionMode.Replace
             }))
             {
                 @Html.Hidden("titulo")
                 <div class="modal-body">
-                    <div>
-                        @Html.Label("Id Rol Pagina")
-                        @Html.TextBox("iidRolPagina", null, new { @class = "form-control", @readOnly = true })
-                    </div>
                     <div>
                         @Html.Label("Nombre Rol")
                         @Html.DropDownList("iidrol", listaRol, new { @class = "form-control" })
@@ -59,33 +58,103 @@
                     <button type="button" id="btnClose" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
+                <div id="divErrores"></div>
             }
 
         </div>
     </div>
 </div>
 
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalConfirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">¿Desea guardar los cambios?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div style="padding:1em">
+                <button type="button" id="btnCerrarConfirm" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-info" onclick="eliminarRegistro()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    var iidrols = document.getElementById("iidrol");
+    var iidrols = document.getElementById("iidrolFiltro");
     iidrols.onchange = () => {
         $("#frmFiltrado").trigger("submit");
     }
 
+    function Eliminar(idRolPag) {
+        document.getElementById("titulo").value = idRolPag;
+
+    }
+
+    function eliminarRegistro() {
+        var titulo = document.getElementById("titulo").value;
+
+        $.get("RolPagina/EliminarRolPagina/?iidRolPagina=" + titulo, function (data) {
+            if (data == 1)
+            {
+                document.getElementById("btnCerrarConfirm").click();
+                alert("Se ejecutó correctamente");
+                $("#frmFiltrado").trigger("submit");
+            }
+            else
+            {
+                alert("Ocurrió un error");
+            }
+        })
+    }
+
     function Agregar() {
-        document.getElementById("titulo").value = 1;
+        Limpiar();
+        document.getElementById("titulo").value = -1;
 
     }
 
     function Guardar(respuesta) {
-        if (respuesta == 1) {
-            $("#frmFiltrado").trigger("submit");
+        if (respuesta == "1" || respuesta == "0") {
             alert("Se ejecutó correctamente");
             document.getElementById("btnClose").click();
+            $("#frmFiltrado").trigger("submit");
+           
 
         }
         else {
-            alert ("Ocurrió un error")
+            if (respuesta == "-1") {
+                alert("Ya existe en la base de datos");
+                document.getElementById("divErrores").innerHTML = "";
+            }
+            else {
+                alert("Ocurrió un error");
+            }
+            
         }
     }
 
+    function Editar(idRolPag) {
+        Limpiar();
+        $.get("RolPagina/recuperarInfo/?idRolPagina=" + idRolPag, function (data) {
+            document.getElementById("iidrol").value = data.iidrol;
+            document.getElementById("iidpagina").value = data.iidpagina;
+
+        });
+        document.getElementById("titulo").value = idRolPag;
+    }
+
+    function Limpiar() {
+        var controles = document.getElementsByClassName("form-control");
+        var control;
+        for (var i = 0; i < controles.length; i++) {
+            control = controles[i];
+            control.value = "";
+        }
+    }
 </script>

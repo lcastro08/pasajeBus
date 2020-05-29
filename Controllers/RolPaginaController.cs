@@ -1,12 +1,15 @@
 ﻿using MiPrimerEntityFramework.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MiPrimerEntityFramework.Filters;
 
 namespace MiPrimerEntityFramework.Controllers
 {
+    [Acceder]
     public class RolPaginaController : Controller
     {
         // GET: RolPagina
@@ -70,12 +73,12 @@ namespace MiPrimerEntityFramework.Controllers
                 ViewBag.listaPagina = lista;
             }
         }
-        public ActionResult Filtrar(int? iidrol) //int? acepta null
+        public ActionResult Filtrar(int? iidrolFiltro) //int? acepta null
         {
             List<RolPaginaCLS> listaRol = new List<RolPaginaCLS>();
             using (var bd = new BDPasajeEntities())
             {
-                if(iidrol == null) { 
+                if(iidrolFiltro == null) { 
                 listaRol = (from RolPagina in bd.RolPagina
                             join rol in bd.Rol
                             on RolPagina.IIDROL equals
@@ -101,7 +104,7 @@ namespace MiPrimerEntityFramework.Controllers
                                 on RolPagina.IIDPAGINA equals
                                 pagina.IIDPAGINA
                                 where RolPagina.BHABILITADO == 1
-                                && RolPagina.IIDROL == iidrol
+                                && RolPagina.IIDROL == iidrolFiltro
                                 select new RolPaginaCLS
                                 {
                                     iidrolpagina = RolPagina.IIDROLPAGINA,
@@ -114,24 +117,113 @@ namespace MiPrimerEntityFramework.Controllers
 
         }
 
-        public int Guardar (RolPaginaCLS oRolPaginaCLS, int titulo)
+        public string Guardar (RolPaginaCLS oRolPaginaCLS, int titulo)
         {
-            int respuesta = 0;
-            using (var bd = new BDPasajeEntities())
+            //error
+            string respuesta = "";
+            try
             {
-                if(titulo == 1)
+                if (!ModelState.IsValid)
                 {
-                    RolPagina oRolPagina = new RolPagina();
-                    oRolPagina.IIDROL = oRolPaginaCLS.iidrol;
-                    oRolPagina.IIDPAGINA = oRolPaginaCLS.iidpagina;
-                    oRolPagina.BHABILITADO = 1;
-                    bd.RolPagina.Add(oRolPagina);
-                    respuesta = bd.SaveChanges();
+                    //Vamos a obtener los estados de cada propiedad y los mensajes de error (si es que hay).
+                    var query = (from state in ModelState.Values
+                                 from error in state.Errors
+                                 select error.ErrorMessage).ToList();
+                    respuesta += "<ul class='list-group'>";
+                    foreach (var item in query)
+                    {
+                        respuesta += "<li class = 'list-group-item'>" + item + "</li>";
+                    }
+                    respuesta += "</ul>";
                 }
+                else 
+                {
+            
+            
+                    using (var bd = new BDPasajeEntities())
+                    {
+                        int cantidad = 0;
+                        //agregar
+                        if(titulo == -1)
+                        {
+                            cantidad = bd.RolPagina.Where(p => p.IIDROL == oRolPaginaCLS.iidrol
+                            && p.IIDPAGINA == oRolPaginaCLS.iidpagina).Count();
+                            if(cantidad >= 1)
+                            {
+                                respuesta = "-1";
+                            }
+                            else
+                            {
+                                RolPagina oRolPagina = new RolPagina();
+                                oRolPagina.IIDROL = oRolPaginaCLS.iidrol;
+                                oRolPagina.IIDPAGINA = oRolPaginaCLS.iidpagina;
+                                oRolPagina.BHABILITADO = 1;
+                                bd.RolPagina.Add(oRolPagina);
+                                respuesta = bd.SaveChanges().ToString();
+                                if (respuesta == "0") respuesta = "";
+                            }
+
+                        }
+                        else
+                        {
+                            cantidad = bd.RolPagina.Where(p => p.IIDROL == oRolPaginaCLS.iidrol
+                            && p.IIDPAGINA == oRolPaginaCLS.iidpagina
+                            && p.IIDROLPAGINA != titulo).Count();
+                            if(cantidad >= 1)
+                            {
+                                respuesta = "-1";
+                            }
+                            else
+                            { 
+                                RolPagina oRolpagina = bd.RolPagina.Where(p => p.IIDROLPAGINA == titulo).First();
+                                oRolpagina.IIDROL = oRolPaginaCLS.iidrol;
+                                oRolpagina.IIDPAGINA = oRolPaginaCLS.iidpagina;
+                                respuesta = bd.SaveChanges().ToString();
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            catch(Exception ex)
+            {
+                respuesta = "";
             }
             return respuesta;
         }
 
+        public JsonResult recuperarInfo(int idRolPagina)
+        {
+            RolPaginaCLS oRolPaginaCLS = new RolPaginaCLS();
+            using (var bd = new BDPasajeEntities())
+            {
+                RolPagina oRolPagina = bd.RolPagina.Where(p => p.IIDROLPAGINA == idRolPagina).First();
+                oRolPaginaCLS.iidrol = (int)oRolPagina.IIDROL;
+                oRolPaginaCLS.iidpagina = (int)oRolPagina.IIDROLPAGINA;
+            }
+            return Json(oRolPaginaCLS, JsonRequestBehavior.AllowGet);
+        }
+
+        public int EliminarRolPagina(int iidRolPagina)
+        {
+            int respuesta = 0;
+            try
+            {
+                using (var bd = new BDPasajeEntities())
+                {
+                    RolPagina oRolPagina = bd.RolPagina.Where(p => p.IIDROLPAGINA == iidRolPagina).First();
+                    oRolPagina.BHABILITADO = 0;
+                    respuesta = bd.SaveChanges();
+
+                }
+            }
+            catch
+            {
+                respuesta = 0;
+            }
+            return respuesta;
+        }
 
     }
 }

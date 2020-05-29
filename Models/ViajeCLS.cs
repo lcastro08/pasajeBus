@@ -19,7 +19,7 @@ namespace MiPrimerEntityFramework.Models
         [Display(Name = "Precio")]
         [Required]
         [Range(0,100000,ErrorMessage ="rango fuera de índices")]
-        public double precio { get; set; }
+        public decimal precio { get; set; }
         [Display(Name = "Fecha Viaje")]
         [Required]
         [DataType(DataType.Date)]
@@ -39,5 +39,14 @@ namespace MiPrimerEntityFramework.Models
         public string nombreLugarDestino { get; set; }
         [Display(Name = "Nombre Bus")]
         public string nombreBus { get; set; }
+
+        public string nombreFoto { get; set; }
+
+        public string mensaje { get; set; }
+
+        public string fechaViajeCadena { get; set; }
+
+        public string extension { get; set; }
+        public string fotoRecuperarCadena { get; set; }
     }
 }

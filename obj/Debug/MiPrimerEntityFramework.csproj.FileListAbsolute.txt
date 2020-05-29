@@ -80,3 +80,6 @@ D:\Cursos\ASP MVC\MiPrimerEntityFramework\obj\Debug\MiPrimerEntityFramework.cspr
 D:\Cursos\ASP MVC\MiPrimerEntityFramework\obj\Debug\MiPrimerEntityFramework.csproj.CopyComplete
 D:\Cursos\ASP MVC\MiPrimerEntityFramework\obj\Debug\MiPrimerEntityFramework.dll
 D:\Cursos\ASP MVC\MiPrimerEntityFramework\obj\Debug\MiPrimerEntityFramework.pdb
+D:\Cursos\ASP MVC\MiPrimerEntityFramework\bin\itextsharp.dll
+D:\Cursos\ASP MVC\MiPrimerEntityFramework\bin\EPPlus.dll
+D:\Cursos\ASP MVC\MiPrimerEntityFramework\bin\EPPlus.xml

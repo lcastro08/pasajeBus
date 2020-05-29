@@ -20,5 +20,7 @@ namespace MiPrimerEntityFramework.Models
         [Display(Name = "Nombre del controlador")]
         public string controlador { get; set; }
         public int bhabilitado { get; set; }
+
+        public string mensajeFiltrar { get; set; }
     }
 }

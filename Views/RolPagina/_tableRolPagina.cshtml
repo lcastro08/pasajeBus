@@ -8,6 +8,7 @@
             <td>@Html.LabelFor(p => Model[0].iidrolpagina)</td>
             <td>@Html.LabelFor(p => Model[0].nombreRol)</td>
             <td>@Html.LabelFor(p => Model[0].nombreMensaje)</td>
+            <td>Operaciones</td>
         </tr>
     </thead>
     <tbody>
@@ -17,6 +18,12 @@
                 <td>@item.iidrolpagina</td>
                 <td>@item.nombreRol</td>
                 <td>@item.nombreMensaje</td>
+                <td>
+                    <button type="button" onclick="Editar(@item.iidrolpagina)" class="btn btn-primary glyphicon glyphicon-edit" data-toggle="modal" data-target="#exampleModal">
+                    </button>
+                    <button type="button" onclick="Eliminar(@item.iidrolpagina)" class="btn btn-danger glyphicon glyphicon-trash" data-toggle="modal" data-target="#exampleModalConfirm">
+                    </button>
+                </td>
             </tr>
         }
     </tbody>

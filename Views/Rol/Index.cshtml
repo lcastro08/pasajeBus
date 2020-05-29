@@ -19,7 +19,7 @@
 }, new { @id = "frmFiltro" }))
 {
     @Html.Label("Ingrese Nombre Rol")
-    @Html.TextBox("nombre", null, new { @class = "form-control" })
+    @Html.TextBox("nombreRol", null, new { @class = "form-control" })
     <div id="divRol">
         @Html.Partial("_tablaRol", Model)
     </div>
@@ -36,18 +36,15 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            @using (Ajax.BeginForm("Guardar", "Rol",null, new AjaxOptions
+            @using (Ajax.BeginForm("Guardar", "Rol", null, new AjaxOptions
             {
                 HttpMethod = "POST",
-                OnSuccess = "Guardar"
+                OnSuccess = "Guardar",
+                UpdateTargetId = "error"
             }))
             {
                 @Html.Hidden("titulo")
                 <div class="modal-body">
-                    <div>
-                        @Html.Label("Id Rol")
-                        @Html.TextBox("iidRol", null, new { @class = "form-control", @readOnly = true })
-                    </div>
                     <div>
                         @Html.Label("Nombre Rol")
                         @Html.TextBox("nombre", null, new { @class = "form-control" })
@@ -62,7 +59,27 @@
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             }
+            <div id="error"></div>
+        </div>
+    </div>
+</div>
 
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalConfirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">¿Desea guardar los cambios?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div style="padding:1em">
+                <button type="button" id="btnCerrarConfirm" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-info" onclick="eliminarRegistro()">Aceptar</button>
+            </div>
         </div>
     </div>
 </div>
@@ -73,16 +90,59 @@
         $("#frmFiltro").trigger("submit");
     }
     function Agregar() {
-        document.getElementById("titulo").value = 1;
+        limpiar();
+        document.getElementById("error").innerHTML = "";
+        document.getElementById("titulo").value = -1;
     }
+
     function Guardar(resultado) {
-        if (resultado == 1) {
+
+        if (resultado == "1" || resultado == "0") {
             $("#frmFiltro").trigger("submit");
             document.getElementById("btnClose").click();
-            alert("Se guardo correctamente")
+            alert("Se guardo correctamente");
         }
         else {
-            alert("Ocurrio un error")
+            if (resultado == "-1") {
+                alert("Ya existe en la base de datos");
+                document.getElementById("error").innerHTML = "";
+            } else {
+                alert("Ocurrio un error");
+            }
         }
+    }
+
+    function Editar(id) {
+        limpiar();
+        document.getElementById("error").innerHTML = "";
+        document.getElementById("titulo").value = id;
+
+        $.get("Rol/recuperarDatos/?titulo=" + id, function (data) {
+            document.getElementById("nombre").value = data.nombre;
+            document.getElementById("descripcion").value = data.descripcion;
+        })//esto es Ajax
+    }
+
+    function limpiar() {
+        document.getElementById("nombre").value = "";
+        document.getElementById("descripcion").value = "";
+        document.getElementById("error").innerHTML = "";
+    }
+
+    function Eliminar(idRol) {
+        document.getElementById("titulo").value = idRol;
+    }
+
+    function eliminarRegistro() {
+        var id = document.getElementById("titulo").value;
+        $.get("Rol/Eliminar/?iidRol=" + id, function (data) {
+            if (data == "1") {
+                alert("Se ejecutó correctamente");
+                $("#frmFiltro").trigger("submit");
+                document.getElementById("btnCerrarConfirm").click();
+
+            }
+
+        })
     }
 </script>

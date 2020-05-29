@@ -11,7 +11,9 @@ namespace MiPrimerEntityFramework.Models
     {
         [Display(Name = "Id Rol Pagina")]
         public int iidrolpagina { get; set;  }
+        [Required]
         public int iidrol { get; set; }
+        [Required]
         public int iidpagina { get; set; }
         public int bhabilitado { get; set; }
         //Propiedades adicionales
